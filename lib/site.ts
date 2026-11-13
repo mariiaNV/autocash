@@ -5,9 +5,10 @@ export const site = {
   brand: "AVTOCASH",
   url: "https://avtocash.od.ua", // TODO: бойовий домен (canonical, sitemap, Open Graph)
   phone: {
-    display: "+38 (0XX) XXX-XX-XX", // TODO: реальний номер — єдине обовʼязкове поле перед запуском
-    href: "tel:+380000000000", // TODO
+    display: "095 001 42 46",
+    href: "tel:+380950014246",
   },
+  secondaryPhone: { display: "068 909 89 79", href: "tel:+380689098979" },
   city: { lat: 46.4825, lng: 30.7233 }, // Одеса
   /** Мессенджери: залиште порожнім — кнопка не показується (жодних «мертвих» кнопок). */
   messengers: {
@@ -37,7 +38,7 @@ export const photos = {
 } as const;
 
 export const localImages = {
-  heroCar: { src: assetPath("/images/hero-car-2000.webp"), srcMobile: assetPath("/images/hero-car-1100.webp"), width: 2000, height: 869 },
+  heroCar: { src: assetPath("/images/hero-range.png"), srcMobile: assetPath("/images/hero-range.png"), width: 2534, height: 1901 },
   carwash: { src: assetPath("/images/carwash.webp"), width: 680, height: 510 },
 } as const;
 

@@ -24,6 +24,7 @@ export default function FinalCta({ t }: { t: Dict }) {
           <div className="final__contact" data-reveal="">
             <p className="final__text">{f.text}</p>
             <a className="final__phone" href={site.phone.href}>{site.phone.display}</a>
+            <a className="final__phone final__phone--secondary" href={site.secondaryPhone.href}>{site.secondaryPhone.display}</a>
             <p className="final__hours mono">{f.hours}</p>
             <div className="final__msg">
               <a className="msg-btn msg-btn--y" href={site.phone.href}><Phone className="ic" aria-hidden="true" />{f.call}</a>

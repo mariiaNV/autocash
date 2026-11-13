@@ -54,6 +54,9 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
             <Phone className="ic" aria-hidden="true" />
             {site.phone.display}
           </a>
+          <a className="nav__phone nav__phone--secondary" href={site.secondaryPhone.href} data-nav="">
+            {site.secondaryPhone.display}
+          </a>
           <div data-nav="">
             <LangSwitch locale={locale} label={t.nav.lang} />
           </div>
@@ -82,6 +85,9 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
           <a className="nav__phone nav__phone--lg" href={site.phone.href}>
             <Phone className="ic" aria-hidden="true" />
             {site.phone.display}
+          </a>
+          <a className="nav__phone nav__phone--lg" href={site.secondaryPhone.href}>
+            {site.secondaryPhone.display}
           </a>
           <Btn href="#lead" magnetic={false} service="sell">
             {t.nav.cta}

@@ -31,6 +31,7 @@ export default function Footer({ t }: { t: Dict }) {
             <h4 className="mono">{f.contacts}</h4>
             <ul>
               <li><a className="footer__tel" href={site.phone.href}><Phone className="ic" aria-hidden="true" />{site.phone.display}</a></li>
+              <li><a className="footer__tel" href={site.secondaryPhone.href}><Phone className="ic" aria-hidden="true" />{site.secondaryPhone.display}</a></li>
               <li>{f.city}</li>
               <li>{f.hours}</li>
               <li><a className="footer__cta" href="#lead">{t.nav.cta} <ArrowUpRight className="ic" aria-hidden="true" /></a></li>
