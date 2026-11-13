@@ -45,6 +45,10 @@ export default function Hero({ t }: { t: Dict }) {
               <Btn href="#lead" service="sell">{h.cta}</Btn>
               <Btn href={site.phone.href} variant="o" icon={<Phone className="ic" />}>{h.call}</Btn>
             </div>
+            <div className="hero__phones" data-hero-fade="" aria-label={h.call}>
+              <a href={site.phone.href}>{site.phone.display}</a>
+              <a href={site.secondaryPhone.href}>{site.secondaryPhone.display}</a>
+            </div>
           </div>
 
           <aside className="hero__eval" aria-label={h.evalTitle} data-hero-fade="">

@@ -160,6 +160,9 @@ svg { display: block; }
 .outline { color: transparent; -webkit-text-stroke: 1.2px rgba(255,255,255,.85); }
 .hero__sub { font-size: clamp(15px, 1.12vw, 18px); color: rgba(255,255,255,.74); max-width: 46ch; margin-bottom: 24px; }
 .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero__phones { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 20px; font-family: var(--fm); font-size: 13px; letter-spacing: .04em; }
+.hero__phones a { color: var(--wh); white-space: nowrap; transition: color .25s; }
+.hero__phones a:hover { color: var(--y); }
 
 .hero__eval { width: 272px; padding: 20px 20px 18px; border: 1px solid var(--ln2); background: rgba(16,16,16,.55);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: relative; }
