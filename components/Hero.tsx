@@ -78,7 +78,7 @@ export default function Hero({ t }: { t: Dict }) {
                 sizes="(max-width: 900px) 120vw, 62vw"
               />
               <div className="hero__refl" aria-hidden="true">
-                <Image src={car.srcMobile} alt="" width={1100} height={478} sizes="(max-width: 900px) 120vw, 62vw" />
+                <Image src={car.srcMobile} alt="" width={car.width} height={car.height} sizes="(max-width: 900px) 120vw, 62vw" />
               </div>
               <div
                 className="hero__sheen"
