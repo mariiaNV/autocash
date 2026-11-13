@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ArrowUpRight, MapPin, Phone } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import { localImages, site } from "@/lib/site";
@@ -67,17 +66,22 @@ export default function Hero({ t }: { t: Dict }) {
           <div className="hero__car">
             <div className="hero__car-in">
               <div className="hero__shadow" aria-hidden="true" />
-              <Image
+              {/* звичайний <img> з srcSet: на телефоні вантажиться 78 КБ версія, на десктопі — 150 КБ */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 className="hero__img"
                 src={car.src}
+                srcSet={`${car.srcMobile} 1000w, ${car.src} 1800w`}
+                sizes="(max-width: 900px) 100vw, 56vw"
                 alt={h.carAlt}
                 width={car.width}
                 height={car.height}
-                priority
-                sizes="(max-width: 900px) 120vw, 62vw"
+                fetchPriority="high"
+                decoding="async"
               />
               <div className="hero__refl" aria-hidden="true">
-                <Image src={car.srcMobile} alt="" width={car.width} height={car.height} sizes="(max-width: 900px) 120vw, 62vw" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={car.srcMobile} alt="" width={car.width} height={car.height} loading="lazy" decoding="async" />
               </div>
               <div
                 className="hero__sheen"

@@ -197,7 +197,7 @@ export function enhance(deps: Deps = {}): () => void {
   ST.config({ ignoreMobileResize: true });
   doc.classList.add("anim");
 
-  if (Lenis) {
+  if (Lenis && finePointer) {
     try {
       lenis = new Lenis({ lerp: 0.12, smoothWheel: true, wheelMultiplier: 0.95 });
       lenis.on("scroll", ST.update);
@@ -226,17 +226,27 @@ export function enhance(deps: Deps = {}): () => void {
     const navItems = nav ? [$(".logo", nav), ...$$("[data-nav]", nav), $(".nav__cta", nav), $(".burger", nav)].filter(Boolean) : [];
     const heroFades = $$("[data-hero-fade]");
     gsap.set(".hero__title .line-inner", { yPercent: 115 });
-    gsap.set(heroFades, { autoAlpha: 0, y: 24 });
+    gsap.set(heroFades, { autoAlpha: 0, y: desktop ? 24 : 14 });
     gsap.set(navItems, { autoAlpha: 0, y: -14 });
-    gsap.set(".hero__car-in", { autoAlpha: 0, x: 120, scale: 0.97 });
-    gsap.set([".hero__spot", ".hero__cone"], { autoAlpha: 0 });
+    if (desktop) {
+      gsap.set(".hero__car-in", { autoAlpha: 0, x: 120, scale: 0.97 });
+      gsap.set([".hero__spot", ".hero__cone"], { autoAlpha: 0 });
+    } else {
+      // телефон: без великих напівпрозорих шарів у інтро — лише легкий fade машини
+      gsap.set(".hero__car-in", { autoAlpha: 0, y: 16 });
+    }
     doc.classList.remove("js-anim"); // CSS-прехайд більше не потрібен — далі керує GSAP
-    gsap.timeline({ defaults: { ease: E } })
-      .to([".hero__spot", ".hero__cone"], { autoAlpha: 1, duration: 2.2, ease: "power2.out" }, 0)
-      .to(".hero__car-in", { autoAlpha: 1, x: 0, scale: 1, duration: 2, ease: "power3.out" }, 0.15)
-      .to(navItems, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.05 }, 0.3)
-      .to(".hero__title .line-inner", { yPercent: 0, duration: 1.4, stagger: 0.12 }, 0.35)
-      .to(heroFades, { autoAlpha: 1, y: 0, duration: 1.2, stagger: 0.08 }, 0.7);
+    const k = desktop ? 1 : 0.6; // на телефоні інтро коротше
+    const intro = gsap.timeline({ defaults: { ease: E }, onComplete: () => { gsap.set([".hero__spot", ".hero__cone", ".hero__car-in"], { willChange: "auto" }); } });
+    if (desktop) {
+      intro.to([".hero__spot", ".hero__cone"], { autoAlpha: 1, duration: 2.2, ease: "power2.out" }, 0)
+        .to(".hero__car-in", { autoAlpha: 1, x: 0, scale: 1, duration: 2, ease: "power3.out" }, 0.15);
+    } else {
+      intro.to(".hero__car-in", { autoAlpha: 1, y: 0, duration: 0.9, ease: "power2.out" }, 0.1);
+    }
+    intro.to(navItems, { autoAlpha: 1, y: 0, duration: 1.1 * k, stagger: 0.05 * k }, 0.3 * k)
+      .to(".hero__title .line-inner", { yPercent: 0, duration: 1.4 * k, stagger: 0.12 * k }, 0.35 * k)
+      .to(heroFades, { autoAlpha: 1, y: 0, duration: 1.2 * k, stagger: 0.08 * k }, 0.7 * k);
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 901px)", () => {
@@ -329,9 +339,10 @@ export function enhance(deps: Deps = {}): () => void {
     });
   });
 
-  const refresh = () => ST.refresh();
-  (document as any).fonts?.ready?.then(refresh);
-  on(window, "load", refresh);
+  // один перерахунок після повного завантаження (а не два підряд під час інтро)
+  let refreshT = 0;
+  const refresh = () => { clearTimeout(refreshT); refreshT = window.setTimeout(() => ST.refresh(), 120); };
+  if (document.readyState === "complete") refresh(); else on(window, "load", refresh);
 
   return () => {
     ctx.revert();
