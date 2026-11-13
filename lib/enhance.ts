@@ -25,18 +25,22 @@ export function enhance(deps: Deps = {}): () => void {
 
   /* ---------- навігація: стан при скролі, ховання вниз / показ вгору, мобільна панель */
   const nav = $("#nav"), mbar = $("#mbar"), hero = $(".hero");
-  let lastY = window.scrollY;
-  const onScroll = () => {
+  let lastY = window.scrollY, heroH = hero?.offsetHeight ?? 0, ticking = false;
+  // одне оновлення на кадр і без читання layout (offsetHeight) під час скролу
+  const update = () => {
+    ticking = false;
     const y = window.scrollY;
     if (nav) {
       nav.classList.toggle("is-scrolled", y > 24);
-      nav.classList.toggle("is-hidden", y > lastY && y > 420 && !doc.classList.contains("menu-open"));
+      if (Math.abs(y - lastY) > 4) nav.classList.toggle("is-hidden", y > lastY && y > 420 && !doc.classList.contains("menu-open"));
     }
-    if (mbar && hero) mbar.classList.toggle("is-on", y > hero.offsetHeight * 0.7);
+    if (mbar) mbar.classList.toggle("is-on", y > heroH * 0.7);
     lastY = y;
   };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
   on(window, "scroll", onScroll, { passive: true });
-  onScroll();
+  on(window, "resize", () => { heroH = hero?.offsetHeight ?? 0; onScroll(); }, { passive: true });
+  update();
 
   /* ---------- мобільне меню */
   const burger = $<HTMLButtonElement>(".burger"), mnav = $("#mnav");
@@ -182,14 +186,20 @@ export function enhance(deps: Deps = {}): () => void {
      MOTION — GSAP + ScrollTrigger + Lenis (тільки якщо доступні й немає reduced-motion)
      ====================================================================== */
   const { gsap, ScrollTrigger: ST, Lenis } = deps;
-  if (!gsap || !ST || reduce) return () => off.forEach((f) => f());
+  if (!gsap || !ST || reduce) {
+    doc.classList.remove("js-anim");
+    return () => off.forEach((f) => f());
+  }
 
   gsap.registerPlugin(ST);
+  // на телефонах показ/ховання адресного рядка змінює висоту вікна — без цього ScrollTrigger
+  // щоразу перераховується, і сторінка «смикається»
+  ST.config({ ignoreMobileResize: true });
   doc.classList.add("anim");
 
   if (Lenis) {
     try {
-      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 0.95 });
+      lenis = new Lenis({ lerp: 0.12, smoothWheel: true, wheelMultiplier: 0.95 });
       lenis.on("scroll", ST.update);
       const raf = (t: number) => lenis.raf(t * 1000);
       gsap.ticker.add(raf);
@@ -202,13 +212,15 @@ export function enhance(deps: Deps = {}): () => void {
         const t = document.querySelector(id);
         if (!t) return;
         e.preventDefault();
-        lenis.scrollTo(t, { offset: id === "#lead" ? -110 : -20, duration: 1.3 });
-        history.replaceState(null, "", id);
+        lenis.scrollTo(t, { offset: id === "#lead" ? -110 : -20, duration: 1.2 });
+        // якір у URL не пишемо: інакше після оновлення сторінка щоразу «стрибає» вниз до секції
       });
     } catch { lenis = null; }
   }
 
   const E = "expo.out";
+  // clip-path перемальовує весь блок на кожному кадрі — лишаємо цей ефект лише для десктопа
+  const desktop = window.matchMedia("(min-width: 901px)").matches;
   const ctx = gsap.context(() => {
     /* intro */
     const navItems = nav ? [$(".logo", nav), ...$$("[data-nav]", nav), $(".nav__cta", nav), $(".burger", nav)].filter(Boolean) : [];
@@ -218,6 +230,7 @@ export function enhance(deps: Deps = {}): () => void {
     gsap.set(navItems, { autoAlpha: 0, y: -14 });
     gsap.set(".hero__car-in", { autoAlpha: 0, x: 120, scale: 0.97 });
     gsap.set([".hero__spot", ".hero__cone"], { autoAlpha: 0 });
+    doc.classList.remove("js-anim"); // CSS-прехайд більше не потрібен — далі керує GSAP
     gsap.timeline({ defaults: { ease: E } })
       .to([".hero__spot", ".hero__cone"], { autoAlpha: 1, duration: 2.2, ease: "power2.out" }, 0)
       .to(".hero__car-in", { autoAlpha: 1, x: 0, scale: 1, duration: 2, ease: "power3.out" }, 0.15)
@@ -278,7 +291,7 @@ export function enhance(deps: Deps = {}): () => void {
     /* «Чому ми»: фото розкривається, світло ковзає, вставка «спливає» */
     const media = $("[data-why-media]");
     if (media) {
-      gsap.fromTo($(".why__frame", media), { clipPath: "inset(14% 10% 14% 10% round 28px)" }, { clipPath: "inset(0% 0% 0% 0% round 28px)", ease: "none",
+      if (desktop) gsap.fromTo($(".why__frame", media), { clipPath: "inset(14% 10% 14% 10% round 28px)" }, { clipPath: "inset(0% 0% 0% 0% round 28px)", ease: "none",
         scrollTrigger: { trigger: media, start: "top 90%", end: "top 35%", scrub: 0.6 } });
       gsap.fromTo($(".why__img", media), { scale: 1.18 }, { scale: 1, ease: "none", scrollTrigger: { trigger: media, start: "top bottom", end: "bottom top", scrub: true } });
       gsap.from([$(".why__inset", media), $(".why__badge", media)], { y: 60, autoAlpha: 0, duration: 1.2, ease: E, stagger: 0.15,
@@ -295,7 +308,7 @@ export function enhance(deps: Deps = {}): () => void {
     /* автомийка */
     const wv = $("[data-wash-visual]");
     if (wv) {
-      gsap.fromTo(wv, { clipPath: "inset(10% 8% 10% 8% round 28px)" }, { clipPath: "inset(0% 0% 0% 0% round 28px)", ease: "none",
+      if (desktop) gsap.fromTo(wv, { clipPath: "inset(10% 8% 10% 8% round 28px)" }, { clipPath: "inset(0% 0% 0% 0% round 28px)", ease: "none",
         scrollTrigger: { trigger: wv, start: "top 92%", end: "top 35%", scrub: 0.6 } });
       gsap.fromTo($(".wash__visual-in", wv), { yPercent: -6, scale: 1.12 }, { yPercent: 6, scale: 1.04, ease: "none",
         scrollTrigger: { trigger: wv, start: "top bottom", end: "bottom top", scrub: true } });

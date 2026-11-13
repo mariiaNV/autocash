@@ -28,7 +28,7 @@
 
 [hidden] { display: none !important; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--bk); color: var(--wh); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; text-size-adjust: 100%; }
+html { background: var(--bk); color: var(--wh); -webkit-font-smoothing: antialiased; text-size-adjust: 100%; overflow-anchor: none; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 body { font-family: var(--fb); font-size: 16px; line-height: 1.55; overflow-x: clip; }
@@ -47,8 +47,12 @@ svg { display: block; }
 .ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 
 /* film grain */
-.grain { position: fixed; inset: 0; z-index: 95; pointer-events: none; opacity: .055; mix-blend-mode: overlay;
+.grain { position: fixed; inset: 0; z-index: 95; pointer-events: none; opacity: .035; transform: translateZ(0);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* прехайд інтро до старту GSAP (клас ставить inline-скрипт у <head>, знімає enhance.ts або таймер) */
+.js-anim .hero__title .line-inner, .js-anim [data-hero-fade], .js-anim .hero__car-in, .js-anim .hero__spot, .js-anim .hero__cone,
+.js-anim .nav .logo, .js-anim .nav [data-nav], .js-anim .nav .nav__cta, .js-anim .nav .burger { opacity: 0; }
 
 /* line-mask reveal */
 .line { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
@@ -104,9 +108,39 @@ svg { display: block; }
 .nav__links a:hover { color: var(--wh); }
 .nav__links a::after { content: ""; position: absolute; left: 0; bottom: 2px; width: 100%; height: 1px; background: var(--y); transform: scaleX(0); transform-origin: right; transition: transform .55s var(--ease); }
 .nav__links a:hover::after, .nav__links a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
-.nav__phone { display: inline-flex; align-items: center; gap: 10px; font-family: var(--fm); font-size: 13px; letter-spacing: .02em; white-space: nowrap; }
-.nav__phone--secondary { margin-left: -4px; }
-.nav__phone .ic { width: 15px; height: 15px; color: var(--y); }
+/* phones in the header: icon + two stacked numbers */
+.nav__phones { display: inline-flex; align-items: center; gap: 10px; flex: none; }
+.nav__phones-ic { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--ln2); display: grid; place-items: center; color: var(--y); flex: none; }
+.nav__phones-ic .ic { width: 15px; height: 15px; }
+.nav__phones-list { display: grid; gap: 2px; font-family: var(--fm); font-size: 13px; line-height: 1.25; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nav__phones-list a { transition: color .25s; }
+.nav__phones-list a:hover, .nav__phones-list a:focus-visible { color: var(--y); }
+
+/* phone list (hero chips / contacts / mobile menu) */
+.phones { list-style: none; }
+.phones__item { display: flex; align-items: center; gap: 12px; transition: color .3s, border-color .3s, background-color .3s; }
+.phones__ic { flex: none; display: grid; place-items: center; border-radius: 50%; color: var(--y); transition: background-color .3s, color .3s; }
+.phones__num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.phones__op { font-size: 10px; letter-spacing: .14em; }
+
+.phones--chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.phones--chips .phones__item { height: 44px; padding: 0 16px 0 5px; border: 1px solid var(--ln2); border-radius: 999px; background: rgba(10,10,10,.35); font-family: var(--fm); font-size: 14px; letter-spacing: .02em; gap: 10px; }
+.phones--chips .phones__ic { width: 34px; height: 34px; background: rgba(245,196,0,.12); }
+.phones--chips .phones__ic .ic { width: 15px; height: 15px; }
+.phones--chips .phones__item:hover, .phones--chips .phones__item:focus-visible { border-color: var(--y); }
+.phones--chips .phones__item:hover .phones__ic { background: var(--y); color: var(--bk); }
+
+.phones--list { display: grid; border-top: 1px solid var(--ln); }
+.phones--list .phones__item { padding: 18px 0; border-bottom: 1px solid var(--ln); gap: 16px; }
+.phones--list .phones__ic { width: 48px; height: 48px; border: 1px solid var(--ln2); }
+.phones--list .phones__num { font-family: var(--fd); font-weight: 500; font-size: clamp(24px, 2.4vw, 38px); letter-spacing: -.02em; line-height: 1; }
+.phones--list .phones__op { margin-left: auto; }
+.phones--list .phones__item:hover, .phones--list .phones__item:focus-visible { color: var(--y); }
+.phones--list .phones__item:hover .phones__ic { background: var(--y); color: var(--bk); border-color: var(--y); }
+.phones--menu { width: 100%; }
+.phones--menu .phones__item { padding: 14px 0; }
+.phones--menu .phones__ic { width: 42px; height: 42px; }
+.phones--menu .phones__num { font-size: 24px; }
 .burger { display: none; width: 46px; height: 46px; border: 1px solid var(--ln2); border-radius: 50%; place-content: center; justify-items: center; margin-left: auto; flex: none; }
 .burger span { display: block; width: 16px; height: 1.5px; background: var(--wh); transition: transform .5s var(--ease); }
 .burger span + span { margin-top: 5px; }
@@ -132,7 +166,6 @@ svg { display: block; }
 .lang a { display: grid; place-items: center; min-width: 38px; height: 30px; padding: 0 8px; border-radius: 999px; color: var(--mu); transition: color .3s, background-color .4s var(--ease); }
 .lang a:hover { color: var(--wh); }
 .lang a.is-active { background: var(--wh); color: var(--bk); }
-.nav__phone--lg { font-size: 17px; }
 
 /* ------------------------------------------------------------------ hero */
 .hero { position: relative; min-height: 100svh; min-height: max(100svh, 720px); overflow: hidden; isolation: isolate; }
@@ -160,9 +193,6 @@ svg { display: block; }
 .outline { color: transparent; -webkit-text-stroke: 1.2px rgba(255,255,255,.85); }
 .hero__sub { font-size: clamp(15px, 1.12vw, 18px); color: rgba(255,255,255,.74); max-width: 46ch; margin-bottom: 24px; }
 .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; }
-.hero__phones { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 20px; font-family: var(--fm); font-size: 13px; letter-spacing: .04em; }
-.hero__phones a { color: var(--wh); white-space: nowrap; transition: color .25s; }
-.hero__phones a:hover { color: var(--y); }
 
 .hero__eval { width: 272px; padding: 20px 20px 18px; border: 1px solid var(--ln2); background: rgba(16,16,16,.55);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: relative; }
@@ -189,9 +219,11 @@ svg { display: block; }
 .hero__refl img { display: block; width: 100%; height: auto; filter: blur(1.5px); }
 .hero__sheen { position: absolute; z-index: 3; inset: 0; mix-blend-mode: soft-light; pointer-events: none;
   -webkit-mask: var(--hero-mask) center / 100% 100% no-repeat; mask: var(--hero-mask) center / 100% 100% no-repeat;
-  background: linear-gradient(100deg, transparent 38%, rgba(255,255,255,.9) 50%, transparent 62%) 0 0 / 300% 100% no-repeat;
-  animation: sheen 7.5s cubic-bezier(.45,0,.2,1) 1.2s infinite; }
-@keyframes sheen { 0% { background-position: 120% 0; } 45%, 100% { background-position: -40% 0; } }
+  overflow: hidden; }
+.hero__sheen::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 60%; will-change: transform;
+  background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.9) 50%, transparent 80%);
+  transform: translateX(-120%); animation: sheen 7.5s cubic-bezier(.45,0,.2,1) 1.2s infinite; }
+@keyframes sheen { 0% { transform: translateX(-120%); } 45%, 100% { transform: translateX(220%); } }
 .hero__scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.45) 28%, transparent 46%), linear-gradient(0deg, rgba(10,10,10,.8) 0%, transparent 11%); }
 
@@ -245,7 +277,7 @@ svg { display: block; }
 .panel__top { position: absolute; z-index: 3; top: 22px; left: 24px; right: 22px; display: flex; justify-content: space-between; align-items: center; }
 .panel__num { font-family: var(--fm); font-size: 12px; letter-spacing: .14em; color: var(--wh); }
 .panel__num i { font-style: normal; color: var(--mu); }
-.panel__go { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--ln2); display: grid; place-items: center; background: rgba(10,10,10,.35); backdrop-filter: blur(6px);
+.panel__go { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--ln2); display: grid; place-items: center; background: rgba(10,10,10,.55);
   transition: background-color .6s var(--ease), color .6s var(--ease), transform .8s var(--ease), border-color .6s; }
 .panel:hover .panel__go, .panel:focus-visible .panel__go { background: var(--y); color: var(--bk); border-color: var(--y); transform: rotate(45deg); }
 .panel__body { position: absolute; z-index: 3; left: 26px; right: 26px; bottom: 26px; }
@@ -378,16 +410,14 @@ svg { display: block; }
 .final__grid { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; align-items: start; }
 .final__contact { grid-column: 1 / span 5; }
 .final__text { font-size: clamp(16px, 1.3vw, 20px); max-width: 32ch; color: rgba(255,255,255,.82); }
-.final__phone { display: inline-block; margin-top: 36px; font-family: var(--fd); font-weight: 500; font-size: clamp(24px, 2.6vw, 44px); letter-spacing: -.03em; line-height: 1; transition: color .3s; }
-.final__phone--secondary { margin-top: 12px; }
-.final__phone:hover { color: var(--y); }
-.final__hours { margin-top: 12px; }
+.final__phones { margin-top: 36px; max-width: 520px; }
+.final__hours { margin-top: 16px; }
 .final__msg { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
 .msg-btn { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 18px; border: 1px solid var(--ln2); border-radius: 999px; font-size: 14px; font-weight: 600; transition: border-color .4s, background-color .4s, color .4s; }
 .msg-btn:hover { border-color: var(--wh); background: var(--wh); color: var(--bk); }
 .msg-btn--y { background: var(--y); border-color: var(--y); color: var(--bk); }
 
-.form { grid-column: 7 / span 6; position: relative; background: rgba(23,23,23,.88); border: 1px solid var(--ln); border-radius: 24px; padding: clamp(22px, 3vw, 44px); backdrop-filter: blur(10px); overflow: hidden; }
+.form { grid-column: 7 / span 6; position: relative; background: rgba(23,23,23,.96); border: 1px solid var(--ln); border-radius: 24px; padding: clamp(22px, 3vw, 44px); overflow: hidden; }
 .form__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; }
 .seg { border: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; min-width: 0; }
 .seg legend { margin-bottom: 12px; }
@@ -455,8 +485,11 @@ svg { display: block; }
 @media (min-width: 1700px) {
   .hero__car { width: min(50vw, 1240px); right: 3vw; bottom: 15%; }
 }
+@media (max-width: 1360px) {
+  .nav__phones-ic { display: none; }
+}
 @media (max-width: 1280px) {
-  .nav .nav__phone { display: none; }
+  .nav .nav__phones { display: none; }
 }
 @media (max-width: 1180px) {
   .nav__menu { display: none; }
@@ -530,6 +563,14 @@ svg { display: block; }
   .footer__grid > :first-child { grid-column: 1 / -1; }
   .mbar { display: grid; }
   .footer { padding-bottom: 104px; }
+
+  /* продуктивність на телефонах: без шуму, відблиску та важкого блюру */
+  .grain, .hero__sheen { display: none; }
+  .hero__cone { filter: blur(14px); }
+  .btn--o { backdrop-filter: none; background: rgba(10,10,10,.6); }
+  .why__badge { backdrop-filter: none; background: rgba(16,16,16,.92); }
+  .hero__eval { backdrop-filter: none; background: rgba(16,16,16,.85); }
+  .final__phones { max-width: none; }
 }
 @media (max-width: 720px) {
   .price { border-radius: 22px; }
@@ -550,6 +591,12 @@ svg { display: block; }
 }
 @media (max-width: 560px) {
   .hero__ctas { flex-direction: column; }
+  .phones--chips { display: grid; grid-template-columns: 1fr; }
+  .phones--chips .phones__item { height: 52px; font-size: 16px; }
+  .phones--chips .phones__ic { width: 40px; height: 40px; }
+  .phones--chips .phones__op { margin-left: auto; }
+  .phones--list .phones__ic { width: 44px; height: 44px; }
+  .phones--list .phones__num { font-size: 24px; }
   .hero__ctas .btn { flex: none; width: 100%; }
   .stats { grid-template-columns: 1fr 1fr; }
   .stat { padding-right: 10px; }
@@ -562,6 +609,8 @@ svg { display: block; }
 }
 @media (max-width: 380px) {
   .nav__in { gap: 10px; }
+  .phones--list .phones__op { display: none; }
+  .phones--chips .phones__item { font-size: 15px; }
   .logo { font-size: 18px; }
   .panel__body { padding-top: 270px; }
   .price__cls-name { width: 100%; }

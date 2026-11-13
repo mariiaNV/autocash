@@ -3,7 +3,7 @@ import { ArrowUpRight, MapPin, Phone } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import { localImages, site } from "@/lib/site";
 import type { CSSProperties } from "react";
-import { Btn } from "./ui";
+import { Btn, Phones } from "./ui";
 
 const floorLines = [
   ...Array.from({ length: 11 }, (_, i) => {
@@ -45,9 +45,8 @@ export default function Hero({ t }: { t: Dict }) {
               <Btn href="#lead" service="sell">{h.cta}</Btn>
               <Btn href={site.phone.href} variant="o" icon={<Phone className="ic" />}>{h.call}</Btn>
             </div>
-            <div className="hero__phones" data-hero-fade="" aria-label={h.call}>
-              <a href={site.phone.href}>{site.phone.display}</a>
-              <a href={site.secondaryPhone.href}>{site.secondaryPhone.display}</a>
+            <div data-hero-fade="">
+              <Phones variant="chips" label={h.call} className="hero__phones" />
             </div>
           </div>
 

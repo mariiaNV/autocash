@@ -1,8 +1,7 @@
-import { Phone } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import { localePath } from "@/lib/i18n";
-import { site, type Locale } from "@/lib/site";
-import { Btn } from "./ui";
+import { type Locale } from "@/lib/site";
+import { Btn, Phones } from "./ui";
 
 function Logo({ label }: { label: string }) {
   return (
@@ -50,13 +49,7 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
               ))}
             </ul>
           </nav>
-          <a className="nav__phone" href={site.phone.href} data-nav="">
-            <Phone className="ic" aria-hidden="true" />
-            {site.phone.display}
-          </a>
-          <a className="nav__phone nav__phone--secondary" href={site.secondaryPhone.href} data-nav="">
-            {site.secondaryPhone.display}
-          </a>
+          <Phones variant="nav" />
           <div data-nav="">
             <LangSwitch locale={locale} label={t.nav.lang} />
           </div>
@@ -82,13 +75,7 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
         </ul>
         <div className="mnav__foot">
           <LangSwitch locale={locale} label={t.nav.lang} />
-          <a className="nav__phone nav__phone--lg" href={site.phone.href}>
-            <Phone className="ic" aria-hidden="true" />
-            {site.phone.display}
-          </a>
-          <a className="nav__phone nav__phone--lg" href={site.secondaryPhone.href}>
-            {site.secondaryPhone.display}
-          </a>
+          <Phones variant="list" className="phones--menu" />
           <Btn href="#lead" magnetic={false} service="sell">
             {t.nav.cta}
           </Btn>

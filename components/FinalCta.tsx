@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { ArrowUpRight, Check, MessageCircle, Phone, Send } from "lucide-react";
+import { ArrowUpRight, Check, MessageCircle, Send } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import { localImages, site } from "@/lib/site";
-import { Lines, SecLabel } from "./ui";
+import { Lines, Phones, SecLabel } from "./ui";
 
 export default function FinalCta({ t }: { t: Dict }) {
   const f = t.final;
@@ -12,7 +12,7 @@ export default function FinalCta({ t }: { t: Dict }) {
   return (
     <section className="sec final" id="contacts" aria-labelledby="final-title">
       <div className="final__nose" aria-hidden="true">
-        <Image src={localImages.heroCar.srcMobile} alt="" width={1100} height={478} sizes="50vw" />
+        <Image src={localImages.heroCar.srcMobile} alt="" width={1000} height={750} sizes="50vw" loading="lazy" />
       </div>
       <div className="wrap">
         <SecLabel n="04">{f.label}</SecLabel>
@@ -23,15 +23,13 @@ export default function FinalCta({ t }: { t: Dict }) {
         <div className="final__grid">
           <div className="final__contact" data-reveal="">
             <p className="final__text">{f.text}</p>
-            <a className="final__phone" href={site.phone.href}>{site.phone.display}</a>
-            <a className="final__phone final__phone--secondary" href={site.secondaryPhone.href}>{site.secondaryPhone.display}</a>
+            <Phones variant="list" label={f.call} className="final__phones" />
             <p className="final__hours mono">{f.hours}</p>
-            <div className="final__msg">
-              <a className="msg-btn msg-btn--y" href={site.phone.href}><Phone className="ic" aria-hidden="true" />{f.call}</a>
+            {(m.telegram || m.viber || m.whatsapp) && <div className="final__msg">
               {m.telegram && <a className="msg-btn" href={m.telegram} target="_blank" rel="noopener noreferrer"><Send className="ic" aria-hidden="true" />Telegram</a>}
               {m.viber && <a className="msg-btn" href={m.viber}><MessageCircle className="ic" aria-hidden="true" />Viber</a>}
               {m.whatsapp && <a className="msg-btn" href={m.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="ic" aria-hidden="true" />WhatsApp</a>}
-            </div>
+            </div>}
           </div>
 
           <form

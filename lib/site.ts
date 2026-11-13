@@ -4,11 +4,8 @@
 export const site = {
   brand: "AVTOCASH",
   url: "https://avtocash.od.ua", // TODO: бойовий домен (canonical, sitemap, Open Graph)
-  phone: {
-    display: "095 001 42 46",
-    href: "tel:+380950014246",
-  },
-  secondaryPhone: { display: "068 909 89 79", href: "tel:+380689098979" },
+  phone: { display: "095 001 42 46", href: "tel:+380950014246", operator: "Vodafone" },
+  secondaryPhone: { display: "068 909 89 79", href: "tel:+380689098979", operator: "Kyivstar" },
   address: "вулиця Балківська, 130, Одеса",
   city: { lat: 46.4825, lng: 30.7233 }, // Одеса
   /** Мессенджери: залиште порожнім — кнопка не показується (жодних «мертвих» кнопок). */
@@ -29,17 +26,19 @@ export const site = {
 export const assetPath = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;
 
 /** Фото послуг — Unsplash License (безкоштовно, комерційне використання дозволене). */
-const u = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&q=80`;
+// w= обовʼязковий: без нього Unsplash віддає оригінал 4000+ px (кілька МБ на фото).
+const u = (id: string, w = 1400) => `https://images.unsplash.com/${id}?auto=format&fit=crop&q=75&w=${w}`;
 export const photos = {
   sell: { src: u("photo-1727893512947-8bdc773ceb02"), credit: "Mehmet Talha Onuk / Unsplash" },
   pledge: { src: u("photo-1763729805496-b5dbf7f00c79"), credit: "Jakub Żerdzicki / Unsplash" },
   pawn: { src: u("photo-1727893390456-eb52017d99e0"), credit: "Mehmet Talha Onuk / Unsplash" },
   why: { src: u("photo-1727893467393-24bc37e8a117"), credit: "Mehmet Talha Onuk / Unsplash" },
-  inspect: { src: u("photo-1792792999828-74b071329fdd"), credit: "Unsplash" },
+  inspect: { src: u("photo-1792792999828-74b071329fdd", 600), credit: "Unsplash" },
 } as const;
 
 export const localImages = {
-  heroCar: { src: assetPath("/images/hero-range.png"), srcMobile: assetPath("/images/hero-range.png"), width: 2534, height: 1901 },
+  // WebP з прозорістю: 150 КБ замість 4 МБ PNG. Оригінал — public/images/hero-range.png.
+  heroCar: { src: assetPath("/images/hero-range-1800.webp"), srcMobile: assetPath("/images/hero-range-1000.webp"), width: 1800, height: 1350 },
   carwash: { src: assetPath("/images/carwash.webp"), width: 680, height: 510 },
 } as const;
 

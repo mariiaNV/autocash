@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Phone } from "lucide-react";
+import { site } from "@/lib/site";
 
 type BtnProps = {
   href: string;
@@ -76,5 +77,40 @@ export function ClassIcon({ k }: { k: string }) {
       {body[k]}
       {wheels(8.5, 20)}
     </svg>
+  );
+}
+
+const phoneList = [site.phone, site.secondaryPhone];
+
+/**
+ * Обидва номери одним блоком. Кожен номер — окремий рядок/кнопка з оператором,
+ * щоб номери ніколи не «злипалися» в один довгий рядок.
+ * variant: nav — компактно у шапці; chips — кнопки-пігулки (hero); list — великі рядки (контакти, меню).
+ */
+export function Phones({ variant, label, className = "" }: { variant: "nav" | "chips" | "list"; label?: string; className?: string }) {
+  if (variant === "nav") {
+    return (
+      <div className={`nav__phones ${className}`.trim()} data-nav="">
+        <span className="nav__phones-ic" aria-hidden="true"><Phone className="ic" /></span>
+        <span className="nav__phones-list">
+          {phoneList.map((p) => (
+            <a key={p.href} href={p.href} aria-label={`${p.display} (${p.operator})`}>{p.display}</a>
+          ))}
+        </span>
+      </div>
+    );
+  }
+  return (
+    <ul className={`phones phones--${variant} ${className}`.trim()} aria-label={label}>
+      {phoneList.map((p) => (
+        <li key={p.href}>
+          <a className="phones__item" href={p.href}>
+            <span className="phones__ic" aria-hidden="true"><Phone className="ic" /></span>
+            <span className="phones__num">{p.display}</span>
+            <span className="phones__op mono">{p.operator}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
